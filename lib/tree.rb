@@ -7,7 +7,18 @@ class Tree
   end
 
   def build_tree(arr)
-    nil
+    return nil if arr.empty?
+
+    arr = arr.uniq.sort
+    middle = arr.length / 2
+
+    node = Node.new(arr[middle])
+
+    node.left = build_tree(arr[0, middle])
+
+    node.right = build_tree(arr[middle+1, arr.length])
+
+    node
   end
 
 
