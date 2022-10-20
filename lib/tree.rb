@@ -114,26 +114,20 @@ class Tree
   def level_order(node = @root)
     return if node.nil?
     queue = [node]
+    values_array = []
+    loop do
+      break if queue.empty?
+      current_node = queue.pop
 
-    if block_given?
-      loop do
-        break if queue.empty?
-        current_node = queue.pop
+      if block_given?
         yield current_node
-        queue.unshift(current_node.left) unless current_node.left.nil?
-        queue.unshift(current_node.right) unless current_node.right.nil?
+      else
+        values_array.push(current_node.data)
       end
-    else
-      values_array = []
-      loop do
-        break if queue.empty?
-          current_node = queue.pop
-          values_array.push(current_node.data)
-          queue.unshift(current_node.left) unless current_node.left.nil?
-          queue.unshift(current_node.right) unless current_node.right.nil?
-      end
-      values_array
+      queue.unshift(current_node.left) unless current_node.left.nil?
+      queue.unshift(current_node.right) unless current_node.right.nil?
     end
+    return values_array unless block_given?
   end
 
 
