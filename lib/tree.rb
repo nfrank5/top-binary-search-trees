@@ -31,7 +31,7 @@ class Tree
     new_node > last_node ? last_node.right = new_node : last_node.left = new_node
   end
 
-  def find(value, node)
+  def find(value, node = @root)
     value_node = Node.new(value)
     if !node.left.nil? && value_node < node 
       find value, node.left
@@ -73,6 +73,7 @@ class Tree
     node_to_delete = find(value, node)
     parent = find_parent(node_to_delete, node)
     case true
+      #delete roor
       when parent.nil? && node_to_delete.leaf?
         @root = nil
       when parent.nil? && node_to_delete.one_child_node?
@@ -89,6 +90,7 @@ class Tree
           nmv.right = node_to_delete.right
           @root = nmv
         end
+      #delete others
       when node_to_delete.leaf?
         node_to_delete > parent ? parent.right = nil : parent.left = nil
       when node_to_delete.one_child_node?
@@ -108,4 +110,31 @@ class Tree
         nil
     end
   end
+
+  def level_order(node = @root)
+    return if node.nil?
+    queue = [node]
+
+    if block_given?
+      loop do
+        break if queue.empty?
+        current_node = queue.pop
+        yield current_node
+        queue.unshift(current_node.left) unless current_node.left.nil?
+        queue.unshift(current_node.right) unless current_node.right.nil?
+      end
+    else
+      values_array = []
+      loop do
+        break if queue.empty?
+          current_node = queue.pop
+          values_array.push(current_node.data)
+          queue.unshift(current_node.left) unless current_node.left.nil?
+          queue.unshift(current_node.right) unless current_node.right.nil?
+      end
+      values_array
+    end
+  end
+
+
 end
