@@ -17,8 +17,9 @@ class Tree
     node
   end
 
-
   def pretty_print(node = @root, prefix = '', is_left = true)
+    return nil if node.nil?
+
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
     pretty_print(node.left, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left
@@ -26,22 +27,85 @@ class Tree
 
   def insert(value)
     new_node = Node.new(value)
-    last_node = navigate_to_last_node(new_node, @root)
+    last_node = find(value, @root)
     new_node > last_node ? last_node.right = new_node : last_node.left = new_node
   end
 
-  def navigate_to_last_node(new_node, node)
-    p "#{node.data}"
-    if !node.left.nil? && new_node < node 
-      navigate_to_last_node new_node, node.left
-    elsif !node.right.nil? && new_node > node
-      navigate_to_last_node new_node, node.right
+  def find(value, node)
+    value_node = Node.new(value)
+    if !node.left.nil? && value_node < node 
+      find value, node.left
+    elsif !node.right.nil? && value_node > node
+      find value, node.right
     else
       node
     end
   end
 
+  def next_minimum_value(node = @root, first_recursion = true)
+    if first_recursion
+      next_minimum_value(node.right, false) 
+    else
+      return node if node.left.nil?
+      next_minimum_value(node.left, false)
+    end
+  end
+
+  def find_parent(node, tree)
+    return nil if node == tree
+
+    if !tree.left.nil? && node == tree.left
+      tree
+    elsif !tree.right.nil? && node == tree.right
+      tree
+    else
+      if !tree.right.nil? && node > tree 
+        find_parent(node, tree.right)
+      else
+        find_parent(node, tree.left)
+      end
+    end
+  end
+
+  def delete(value, node = @root)
+    return nill if node.nil?
+
+    node_to_delete = find(value, node)
+    parent = find_parent(node_to_delete, node)
+    case true
+      when parent.nil? && node_to_delete.leaf?
+        @root = nil
+      when parent.nil? && node_to_delete.one_child_node?
+        @root = !node_to_delete.left.nil? ? node_to_delete.left : node_to_delete.right
+      when parent.nil? && node_to_delete.two_child_node?
+        nmv = next_minimum_value(node_to_delete)
+        nmv_parent = find_parent(nmv, node)
+        if nmv_parent == node_to_delete
+          nmv.left = node_to_delete.left
+          @root = nmv
+        else
+          nmv_parent.left = nmv.right
+          nmv.left = node_to_delete.left
+          nmv.right = node_to_delete.right
+          @root = nmv
+        end
+      when node_to_delete.leaf?
+        node_to_delete > parent ? parent.right = nil : parent.left = nil
+      when node_to_delete.one_child_node?
+        if node_to_delete > parent 
+          parent.right = !node_to_delete.left.nil? ? node_to_delete.left : node_to_delete.right
+        else 
+          parent.left = !node_to_delete.left.nil? ? node_to_delete.left : node_to_delete.right
+        end
+      when node_to_delete.two_child_node?
+        nmv = next_minimum_value(node_to_delete)
+        nmv_parent = find_parent(nmv, node)
+        nmv_parent.left = nmv.right
+        nmv.left = node_to_delete.left
+        nmv.right = node_to_delete.right
+        node_to_delete > parent ? parent.right = nmv : parent.left = nmv
+      else
+        nil
+    end
+  end
 end
-
-
-
