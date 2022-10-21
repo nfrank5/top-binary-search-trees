@@ -191,8 +191,19 @@ class Tree
     end
   end
 
-
-
+  def height(node = @root, count = -1, h = 0)
+    return if node.nil?
+    
+    count += 1
+    h = height(node.left, count, h) unless node.left.nil?
+    h = height(node.right, count, h) unless node.right.nil?
+    if node.leaf? && (count) > h
+      h = (count)
+    end
+    count -=1 
+    h 
+  end
 
 
 end
+
