@@ -148,6 +148,51 @@ class Tree
     queue.unshift(current_node.right) unless current_node.right.nil?
     level_order_recursive(queue, values_array, &block) 
   end
+  
+  def inorder(node = @root, values_array = [], &block)
+    return values_array if !block_given? && node.nil?
+    return if node.nil?
+    
+    inorder(node.left, values_array, &block)
+    if block_given?
+      yield node
+    else
+      values_array.push(node.data)
+    end
+    inorder(node.right, values_array, &block)
+  end
+
+  def preorder(node = @root, values_array = [], &block)
+    return values_array if !block_given? && node.nil?
+    return if node.nil?
+
+
+    if block_given?
+      yield node
+    else
+      values_array.push(node.data)
+    end
+    preorder(node.left, values_array, &block)
+    preorder(node.right, values_array, &block)
+  end
+
+
+  def postorder(node = @root, values_array = [], &block)
+    return values_array if !block_given? && node.nil?
+    return if node.nil?
+
+    
+    postorder(node.left, values_array, &block)
+    postorder(node.right, values_array, &block)
+    if block_given?
+      yield node
+    else
+      values_array.push(node.data)
+    end
+  end
+
+
+
 
 
 end
