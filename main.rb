@@ -1,15 +1,28 @@
 require_relative 'lib/tree'
 require_relative 'lib/node'
 
-arbol = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
-#arbol = Tree.new((Array.new(45) { rand(1..100) }))
-#arbol.find(67)
-
-#p arbol.level_order { |node| p node.data+1 }
-#p arbol.level_order
-
-nuevo_nodo = Node.new(5)
-p arbol.depth(nuevo_nodo)
+arbol = Tree.new((Array.new(15) { rand(1..100) }))
 
 
-arbol.pretty_print
+p "Balanced: #{arbol.balanced?}"
+
+p arbol.level_order
+p arbol.preorder
+p arbol.postorder
+p arbol.inorder
+
+arbol.insert(111)
+arbol.insert(222)
+arbol.insert(333)
+arbol.insert(444)
+
+p "Balanced: #{arbol.balanced?}"
+
+arbol.rebalance
+
+p "Balanced: #{arbol.balanced?}"
+
+p arbol.level_order
+p arbol.preorder
+p arbol.postorder
+p arbol.inorder

@@ -217,5 +217,27 @@ class Tree
     count -=1 
     d 
   end
+
+  def balanced?
+    if @root.left.nil? 
+      left_tree = 0 
+    else
+      left_tree = height(@root.left)
+    end
+
+    if @root.right.nil?
+      right_tree = 0
+    else
+      right_tree = height(@root.right)
+    end
+    (left_tree - right_tree).abs <= 1
+  end
+
+
+
+  def rebalance
+    tree_array = inorder
+    @root = build_tree(tree_array)
+  end
 end
 
