@@ -191,19 +191,31 @@ class Tree
     end
   end
 
-  def height(node = @root, count = -1, h = 0)
+  def height(node = @root, count = 0, h = 0)
     return if node.nil?
-    
-    count += 1
-    h = height(node.left, count, h) unless node.left.nil?
-    h = height(node.right, count, h) unless node.right.nil?
     if node.leaf? && (count) > h
       h = (count)
     end
+    count += 1
+    h = height(node.left, count, h) unless node.left.nil?
+    h = height(node.right, count, h) unless node.right.nil?
     count -=1 
     h 
   end
 
-
+  def depth(target, node = @root, count = 0, d = 0)
+    return if node.nil?
+    if target == node
+      d = count
+    end
+    count += 1
+    if target < node
+      d = depth(target, node.left, count, d) unless node.left.nil?
+    else
+      d = depth(target, node.right, count, d) unless node.right.nil?
+    end
+    count -=1 
+    d 
+  end
 end
 
