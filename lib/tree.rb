@@ -131,4 +131,23 @@ class Tree
   end
 
 
+
+  def level_order_recursive(queue = [@root], values_array = [], &block)
+    return if queue.nil?
+    return values_array if !block_given? && queue.empty?
+
+    return if queue.empty?
+
+    current_node = queue.pop
+    if block_given?
+      yield current_node
+    else
+      values_array.push(current_node.data)
+    end
+    queue.unshift(current_node.left) unless current_node.left.nil?
+    queue.unshift(current_node.right) unless current_node.right.nil?
+    level_order_recursive(queue, values_array, &block) 
+  end
+
+
 end
